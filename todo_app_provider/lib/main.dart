@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app_provider/ui/providers/todo/todo_provider.dart';
 import 'package:todo_app_provider/ui/views/login/login_screen.dart';
@@ -24,9 +25,11 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    //     statusBarColor: Colors.white,
-    //     statusBarIconBrightness: Brightness.dark));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark),
+    );
   }
 
   @override
