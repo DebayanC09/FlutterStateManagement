@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app_provider/data/models/todo_model.dart';
-import 'package:todo_app_provider/ui/providers/todo/todo_provider.dart';
+import 'package:todo_app_provider/ui/providers/todo/todo_list_provider.dart';
 import 'package:todo_app_provider/utils/colors.dart';
 import 'package:todo_app_provider/utils/constants.dart';
 import 'package:todo_app_provider/utils/functionality.dart';
@@ -21,14 +21,14 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  late TodoProvider provider;
+  late TodoListProvider _provider;
 
   @override
   void initState() {
     super.initState();
-    provider = Provider.of<TodoProvider>(context, listen: false);
+    _provider = Provider.of<TodoListProvider>(context, listen: false);
 
-    provider.getTodoList();
+    _provider.getTodoList();
   }
 
   @override
@@ -42,14 +42,14 @@ class _TodoListScreenState extends State<TodoListScreen> {
             onPressed: () {
               _addTodo();
             }),
-        body: Consumer<TodoProvider>(
+        body: Consumer<TodoListProvider>(
           builder: (context, consumerData, child) {
             return Stack(children: [
               _listWidget(
-                  isListLoading: consumerData.isListLoading,
+                  isListLoading: consumerData.isLoading,
                   todoList: consumerData.todoList),
               Visibility(
-                visible: consumerData.isListLoading,
+                visible: consumerData.isLoading,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -157,7 +157,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   void _deleteTodo({required TodoModel todoData}) async {
-    var response = await provider.deleteTodo(todoData: todoData);
+    var response = await _provider.deleteTodo(todoData: todoData);
     showToast(message: response.message);
   }
 

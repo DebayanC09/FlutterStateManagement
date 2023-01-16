@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app_provider/ui/providers/todo/todo_provider.dart';
+import 'package:todo_app_provider/ui/providers/todo/todo_list_provider.dart';
 import 'package:todo_app_provider/ui/views/login/login_screen.dart';
 import 'package:todo_app_provider/ui/views/signup/signup_screen.dart';
 import 'package:todo_app_provider/ui/views/splash/splash_screen.dart';
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TodoProvider()),
+        ChangeNotifierProvider(create: (_) => TodoListProvider()),
       ],
       child: MaterialApp(
         navigatorKey: MyApp.navigatorKey,

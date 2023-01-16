@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app_provider/data/models/general_status.dart';
-import 'package:todo_app_provider/data/models/todo_model.dart';
 import 'package:todo_app_provider/data/repository/todo/todo_repository.dart';
-import 'package:todo_app_provider/utils/constants.dart';
 
-class TodoProvider with ChangeNotifier {
+class AddEditTodoProvider with ChangeNotifier {
   String? _titleErrorText;
 
   String? get titleErrorText => _titleErrorText;
@@ -24,14 +22,6 @@ class TodoProvider with ChangeNotifier {
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
-
-  bool _isListLoading = true;
-
-  bool get isListLoading => _isListLoading;
-
-  final List<TodoModel> _todoList = <TodoModel>[];
-
-  List<TodoModel> get todoList => _todoList;
 
   void setTitleErrorText(String? value) {
     _titleErrorText = value;
@@ -56,22 +46,6 @@ class TodoProvider with ChangeNotifier {
   void setIsLoading(bool value) {
     _isLoading = value;
     notifyListeners();
-  }
-
-  void setIsListLoading(bool value) {
-    _isListLoading = value;
-    notifyListeners();
-  }
-
-  void getTodoList() async {
-    var response = await TodoRepository.totoList();
-    _todoList.clear();
-    if (response.status == Status.success) {
-      _todoList.addAll(response.data as List<TodoModel>);
-    } else {
-      _todoList.clear();
-    }
-    setIsListLoading(false);
   }
 
   Future<GeneralStatus> addTodo(
@@ -99,7 +73,6 @@ class TodoProvider with ChangeNotifier {
           dateTime: dateTime,
           priority: priority);
       setIsLoading(false);
-      updateList(todoData: response.data as TodoModel, type: Constants.add);
       return response;
     }
   }
@@ -131,28 +104,7 @@ class TodoProvider with ChangeNotifier {
           dateTime: dateTime,
           priority: priority);
       setIsLoading(false);
-      updateList(todoData: response.data as TodoModel, type: Constants.update);
       return response;
     }
-  }
-
-  Future<GeneralStatus> deleteTodo({required TodoModel todoData}) async {
-    setIsListLoading(true);
-    var response = await TodoRepository.deleteTodo(id: todoData.id ?? "");
-    updateList(todoData: todoData, type: Constants.delete);
-    setIsListLoading(false);
-    return response;
-  }
-
-  void updateList({required TodoModel todoData, required String type}) {
-    if (type == Constants.add) {
-      _todoList.add(todoData);
-    } else if (type == Constants.update) {
-      int index = _todoList.indexWhere((element) => element.id == todoData.id);
-      _todoList[index] = todoData;
-    } else if (type == Constants.delete) {
-      _todoList.removeWhere((element) => element.id == todoData.id);
-    }
-    notifyListeners();
   }
 }

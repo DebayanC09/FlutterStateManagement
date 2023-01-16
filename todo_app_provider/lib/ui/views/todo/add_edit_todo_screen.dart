@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app_provider/data/models/general_status.dart';
 import 'package:todo_app_provider/data/models/todo_model.dart';
-import 'package:todo_app_provider/ui/providers/todo/todo_provider.dart';
+import 'package:todo_app_provider/ui/providers/todo/add_edit_todo_provider.dart';
+import 'package:todo_app_provider/ui/providers/todo/todo_list_provider.dart';
 import 'package:todo_app_provider/utils/constants.dart';
 import 'package:todo_app_provider/utils/functionality.dart';
 import 'package:todo_app_provider/widgets/custom_appbar.dart';
@@ -30,13 +31,12 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
   String title = "";
   late TodoModel todoData;
 
-  late TodoProvider provider;
+  final AddEditTodoProvider _provider = AddEditTodoProvider();
   late final Map<String, dynamic> arguments;
 
   @override
   void initState() {
     super.initState();
-    provider = Provider.of<TodoProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       arguments = getArguments(context: context);
@@ -56,84 +56,89 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: customAppBar(title: title),
-        body: Padding(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-            child: Consumer<TodoProvider>(
-              builder: (context, consumerData, child) {
-                return ListView(
-                  children: [
-                    CustomTextField(
-                      controller: titleController,
-                      labelText: "Title",
-                      errorText: consumerData.titleErrorText,
-                      onChanged: (value) {
-                        if (consumerData.titleErrorText != null) {
-                          consumerData.setTitleErrorText(null);
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    CustomTextField(
-                      controller: descriptionController,
-                      labelText: "Description",
-                      errorText: consumerData.descriptionErrorText,
-                      onChanged: (value) {
-                        if (consumerData.descriptionErrorText != null) {
-                          consumerData.setDescriptionErrorText(null);
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    CustomDateTimePicker(
-                      controller: dateTimeController,
-                      labelText: "Date Time",
-                      errorText: consumerData.dateTimeErrorText,
-                      onChanged: (value) {
-                        if (consumerData.dateTimeErrorText != null) {
-                          consumerData.setDateTimeErrorText(null);
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    CustomTextField(
-                      controller: priorityController,
-                      labelText: "Priority",
-                      errorText: consumerData.priorityErrorText,
-                      readOnly: true,
-                      onChanged: (value) {
-                        if (consumerData.priorityErrorText != null) {
-                          consumerData.setPriorityErrorText(null);
-                        }
-                      },
-                      onTap: () {
-                        _showBottomSheet(consumerData: consumerData);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    _button(
-                      consumerData: consumerData,
-                    ),
-                  ],
-                );
-              },
-            )),
+    return ChangeNotifierProvider(
+      create: (_) => _provider,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: customAppBar(title: title),
+          body: Padding(
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 16, bottom: 16),
+              child: Consumer<AddEditTodoProvider>(
+                builder: (context, consumerData, child) {
+                  return ListView(
+                    children: [
+                      CustomTextField(
+                        controller: titleController,
+                        labelText: "Title",
+                        errorText: consumerData.titleErrorText,
+                        onChanged: (value) {
+                          if (consumerData.titleErrorText != null) {
+                            consumerData.setTitleErrorText(null);
+                          }
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      CustomTextField(
+                        controller: descriptionController,
+                        labelText: "Description",
+                        errorText: consumerData.descriptionErrorText,
+                        onChanged: (value) {
+                          if (consumerData.descriptionErrorText != null) {
+                            consumerData.setDescriptionErrorText(null);
+                          }
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      CustomDateTimePicker(
+                        controller: dateTimeController,
+                        labelText: "Date Time",
+                        errorText: consumerData.dateTimeErrorText,
+                        onChanged: (value) {
+                          if (consumerData.dateTimeErrorText != null) {
+                            consumerData.setDateTimeErrorText(null);
+                          }
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      CustomTextField(
+                        controller: priorityController,
+                        labelText: "Priority",
+                        errorText: consumerData.priorityErrorText,
+                        readOnly: true,
+                        onChanged: (value) {
+                          if (consumerData.priorityErrorText != null) {
+                            consumerData.setPriorityErrorText(null);
+                          }
+                        },
+                        onTap: () {
+                          _showBottomSheet(
+                            priorityErrorText: consumerData.priorityErrorText,
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      _button(
+                        isLoading: consumerData.isLoading,
+                      ),
+                    ],
+                  );
+                },
+              )),
+        ),
       ),
     );
   }
 
-  void _showBottomSheet({required TodoProvider consumerData}) {
+  void _showBottomSheet({required String? priorityErrorText}) {
     var list = <String>["High", "Medium", "Low"];
     showModalBottomSheet(
         context: context,
@@ -148,8 +153,8 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   onPressed: () {
-                    if (consumerData.priorityErrorText != null) {
-                      consumerData.setPriorityErrorText(null);
+                    if (priorityErrorText != null) {
+                      _provider.setPriorityErrorText(null);
                     }
                     Navigator.pop(context);
                     priorityController.text = list[index];
@@ -159,8 +164,8 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
         });
   }
 
-  Widget _button({required TodoProvider consumerData}) {
-    if (consumerData.isLoading) {
+  Widget _button({required bool isLoading}) {
+    if (isLoading) {
       return const Center(
         child: SizedBox(
           height: 25.0,
@@ -186,13 +191,13 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
 
     GeneralStatus response = GeneralStatus.idle();
     if (type == Constants.add) {
-      response = await provider.addTodo(
+      response = await _provider.addTodo(
           title: title,
           description: description,
           dateTime: dateTime,
           priority: priority);
     } else if (type == Constants.update) {
-      response = await provider.updateTodo(
+      response = await _provider.updateTodo(
           id: todoData.id ?? "",
           title: title,
           description: description,
@@ -203,6 +208,7 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
     if (response.status == Status.success) {
       showToast(message: response.message);
       if (mounted) {
+        Provider.of<TodoListProvider>(context,listen: false).updateList();
         Navigator.pop(context);
       }
     } else if (response.status == Status.error) {

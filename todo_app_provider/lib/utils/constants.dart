@@ -5,6 +5,7 @@ class Constants {
 
   static const String todoData = "todoData";
   static const String type = "type";
+  static const String list = "list";
   static const String add = "add";
   static const String update = "update";
   static const String delete = "delete";
