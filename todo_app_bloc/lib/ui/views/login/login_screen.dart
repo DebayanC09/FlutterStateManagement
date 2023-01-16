@@ -27,12 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final passwordController = TextEditingController();
 
-  final LoginBloc _loginBloc = LoginBloc();
+  final LoginBloc _blocProvider = LoginBloc();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => _loginBloc,
+      create: (_) => _blocProvider,
       child: SafeArea(
         child: Scaffold(
           body: Padding(
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       errorText: state.emailErrorText,
                       onChanged: (value) {
                         if (state.emailErrorText != null) {
-                          _loginBloc.add(EmailErrorText(emailErrorText: null));
+                          _blocProvider.add(EmailErrorText(emailErrorText: null));
                         }
                       },
                     ),
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       errorText: state.passwordErrorText,
                       onChanged: (value) {
                         if (state.passwordErrorText != null) {
-                          _loginBloc
+                          _blocProvider
                               .add(PasswordErrorText(passwordErrorText: null));
                         }
                       },
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = emailController.text.toString().trim();
     String password = passwordController.text.toString().trim();
 
-    _loginBloc.add(Login(email: email, password: password));
+    _blocProvider.add(Login(email: email, password: password));
   }
 
   void _goToSignUp() {

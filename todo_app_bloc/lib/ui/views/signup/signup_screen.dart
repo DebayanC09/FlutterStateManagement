@@ -27,12 +27,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final passwordController = TextEditingController();
 
-  final SignUpBloc _signUpBloc = SignUpBloc();
+  final SignUpBloc _blocProvider = SignUpBloc();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => _signUpBloc,
+      create: (_) => _blocProvider,
       child: SafeArea(
         child: Scaffold(
           appBar: customAppBar(),
@@ -70,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       errorText: state.nameErrorText,
                       onChanged: (value) {
                         if (state.nameErrorText != null) {
-                          _signUpBloc.add(NameErrorText(nameErrorText: null));
+                          _blocProvider.add(NameErrorText(nameErrorText: null));
                         }
                       },
                     ),
@@ -83,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       errorText: state.emailErrorText,
                       onChanged: (value) {
                         if (state.emailErrorText != null) {
-                          _signUpBloc.add(EmailErrorText(emailErrorText: null));
+                          _blocProvider.add(EmailErrorText(emailErrorText: null));
                         }
                       },
                     ),
@@ -96,7 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       errorText: state.passwordErrorText,
                       onChanged: (value) {
                         if (state.passwordErrorText != null) {
-                          _signUpBloc
+                          _blocProvider
                               .add(PasswordErrorText(passwordErrorText: null));
                         }
                       },
@@ -139,6 +139,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String email = emailController.text.toString().trim();
     String password = passwordController.text.toString().trim();
 
-    _signUpBloc.add(SignUp(name: name, email: email, password: password));
+    _blocProvider.add(SignUp(name: name, email: email, password: password));
   }
 }
