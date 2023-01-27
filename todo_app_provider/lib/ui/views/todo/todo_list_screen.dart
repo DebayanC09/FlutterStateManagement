@@ -35,7 +35,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: customAppBar(title: "My Todo"),
+        appBar: CustomAppBar(titleText: "My Todo"),
         drawer: const CustomDrawer(),
         floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
