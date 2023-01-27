@@ -38,7 +38,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       create: (_) => _blocProvider,
       child: SafeArea(
         child: Scaffold(
-          appBar: customAppBar(title: "My Todo"),
+          appBar: CustomAppBar(titleText: "My Todo"),
           drawer: const CustomDrawer(),
           floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.add),

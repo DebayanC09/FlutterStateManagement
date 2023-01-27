@@ -35,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       create: (_) => _blocProvider,
       child: SafeArea(
         child: Scaffold(
-          appBar: customAppBar(),
+          appBar: CustomAppBar(),
           body: Padding(
             padding:
                 const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 0),
